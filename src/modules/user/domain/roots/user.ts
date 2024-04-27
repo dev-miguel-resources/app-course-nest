@@ -23,6 +23,7 @@ export class User {
     return {
       id: this.id,
       fullname: this.fullname,
+      email: this.email,
       image: this.image,
       password: this.password,
       refreshToken: this.refreshToken,
