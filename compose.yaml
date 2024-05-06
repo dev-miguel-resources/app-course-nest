@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  mysql-server:
+    image: mysql:8
+    container_name: mysql-server
+    environment:
+      MYSQL_ROOT_PASSWORD: 12345
+      MYSQL_DATABASE: db
+      MYSQL_USER: mchamorro
+      MYSQL_PASSWORD: 12345
+    restart: unless-stoped # se reinicia solo cuando se detenga
+    ports: 
+      - 3310:3306
+    networks:
+      - net-app
+    volumes:
+      - vol-app:/var/lib/mysql   
+
+networks:
+  net-app:
+    driver: bridge
+    name: net-app
+
+volumes:
+  vol-app:
+    name: vol-app     
+
+  
