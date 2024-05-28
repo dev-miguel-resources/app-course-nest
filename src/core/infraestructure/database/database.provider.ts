@@ -1,3 +1,4 @@
+import { UserEntity } from 'src/modules/user/infraestructure/user.entity';
 import { DataSource } from 'typeorm';
 
 export const databaseProviders = [
@@ -11,12 +12,12 @@ export const databaseProviders = [
         username: 'mchamorro',
         password: '12345',
         database: 'db',
-        entities: [],
+        entities: [UserEntity],
         synchronize: true, // dev
         logging: true, // dev
       });
 
-      return dataSource.initialize();
+      return dataSource.initialize(); // devulve la instancia de la bdd a partir del token
     },
   },
 ];

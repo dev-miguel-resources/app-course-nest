@@ -25,6 +25,6 @@ import { databaseProviders } from './database.provider';
       },
     },*/
   ],
-  exports: [...databaseProviders],
+  exports: [...databaseProviders], // para ocuparlo en otros módulos para utilizar la misma instancia
 })
 export class DatabaseModule {}

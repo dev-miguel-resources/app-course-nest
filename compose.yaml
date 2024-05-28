@@ -9,13 +9,39 @@ services:
       MYSQL_DATABASE: db
       MYSQL_USER: mchamorro
       MYSQL_PASSWORD: 12345
-    restart: unless-stoped # se reinicia solo cuando se detenga
+    restart: unless-stopped # se reinicia solo cuando se detenga
     ports: 
       - 3310:3306
     networks:
       - net-app
     volumes:
-      - vol-app:/var/lib/mysql   
+      - vol-app:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", 'mysqladmin', 'ping', '-h', 'localhost']
+      interval: 10s # cada 10s realice la verificación
+      timeout: 10s # espera máxima x intento
+      retries: 3 # política de reintentos. 
+      start_interval: 5s # espera que se le da antes de empezar las verificaciones
+
+  mysql-client:
+    image: phpmyadmin
+    container_name: mysql-client
+    environment:
+      PMA_ARBITRARY: 1 # lo que genera es una conexión disponible y segura con este proveedor
+    restart: unless-stopped # se reinicia solo cuando se detenga
+    ports: 
+      - 8080:80
+    networks:
+      - net-app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+    depends_on:
+      mysql-server: # espera que arranque el servidor de mysql para comenzar este
+        condition: service_healthy
 
 networks:
   net-app:
@@ -24,6 +50,6 @@ networks:
 
 volumes:
   vol-app:
-    name: vol-app     
+    name: vol-app 
 
   
