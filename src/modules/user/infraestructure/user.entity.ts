@@ -17,6 +17,9 @@ export class UserEntity {
   @Column({ type: 'varchar', length: 100, nullable: false })
   image: string;
 
+  @Column({ type: 'json', nullable: false })
+  address: object;
+
   @Column({ type: 'varchar', length: 100, nullable: false })
   refreshToken: string;
 

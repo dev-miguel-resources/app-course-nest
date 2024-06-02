@@ -17,7 +17,28 @@ export const databaseProviders = [
         logging: true, // dev
       });
 
+      console.log('Database connected');
       return dataSource.initialize(); // devulve la instancia de la bdd a partir del token
+    },
+  },
+  {
+    provide: 'DATA_SOURCE_MONGO',
+    useFactory: async () => {
+      const dataSource = new DataSource({
+        type: 'mongodb',
+        host: 'localhost',
+        //url: 'mongodb://root:12345@localhost/db?authSource=admin'
+        port: 27017,
+        username: 'root',
+        password: '12345',
+        database: 'db',
+        authSource: 'admin',
+        entities: [],
+        synchronize: true, // dev
+        logging: true, // dev
+      });
+
+      return dataSource.initialize(); // devulve la instancia del mongo server
     },
   },
 ];

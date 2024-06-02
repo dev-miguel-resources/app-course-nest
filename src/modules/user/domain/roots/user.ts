@@ -1,10 +1,15 @@
+import { Address } from '../entitities/address';
 import { Role } from '../entitities/role';
-import { UserProperties } from './interfaces/user.interface';
+import {
+  UserProperties,
+  UserUpdateProperties,
+} from './interfaces/user.interface';
 
 export class User {
   private readonly id: string;
   private fullname: string;
   private image: string;
+  private address: Address;
   private readonly email: string;
   private password: string;
   private refreshToken: string;
@@ -15,8 +20,7 @@ export class User {
 
   constructor(props: UserProperties) {
     Object.assign(this, props);
-    this.createdAt = new Date();
-    // solución 1: constructor
+    if (!props.createdAt) this.createdAt = new Date();
   }
 
   properties() {
@@ -25,6 +29,7 @@ export class User {
       fullname: this.fullname,
       email: this.email,
       image: this.image,
+      address: this.address,
       password: this.password,
       refreshToken: this.refreshToken,
       roles: this.roles,
@@ -32,6 +37,15 @@ export class User {
       updatedAt: this.updatedAt,
       deletedAt: this.deletedAt,
     };
+  }
+
+  update(fieldsToUpdate: UserUpdateProperties) {
+    Object.assign(this, fieldsToUpdate);
+    this.updatedAt = new Date();
+  }
+
+  delete() {
+    this.deletedAt = new Date();
   }
 
   // solución 2: dentro de la especificación de un método directamente con las reglas

@@ -43,6 +43,53 @@ services:
       mysql-server: # espera que arranque el servidor de mysql para comenzar este
         condition: service_healthy
 
+  mongo-server:
+    image: mongo:4
+    container_name: mongo-server
+    restart: unless-stopped
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: 12345
+      MONGO_INITDB_DATABASE: db
+    volumes:
+      - vol-app-mongo:/data/db
+    networks:
+      - net-app
+    healthcheck:
+      test: [
+        "CMD", 
+        "mongo", 
+        "--quiet", 
+        "127.0.0.1/test", 
+        '--eval', 
+        "'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)'"
+      ]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 5s
+
+  mongo-client:
+    image: mongo-express:1.0.0-18-alpine3.18
+    container_name: mongo-client
+    restart: unless-stopped
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: 12345
+      ME_CONFIG_BASICAUTH_USERNAME: root
+      ME_CONFIG_BASICAUTH_PASSWORD: 12345
+      ME_CONFIG_MONGODB_SERVER: mongo-server
+      ME_CONFIG_MONGODB_PORT: 27017
+    networks:
+      - net-app
+    depends_on:
+      mongo-server:
+        condition: service_healthy
+
 networks:
   net-app:
     driver: bridge
@@ -50,6 +97,8 @@ networks:
 
 volumes:
   vol-app:
-    name: vol-app 
+    name: vol-app
+  vol-app-mongo:
+    name: vol-app-mongo  
 
   
