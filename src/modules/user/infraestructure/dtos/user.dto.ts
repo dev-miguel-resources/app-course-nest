@@ -1,3 +1,4 @@
+import { RoleEntity } from 'src/modules/role/infraestructure/entities/role.entity';
 import { User } from '../../domain/roots/user';
 import { UserEntity } from '../user.entity';
 
@@ -17,6 +18,7 @@ export class UserDto {
       updatedAt,
       deletedAt,
       roles,
+      address,
     } = data.properties();
     const userEntity = new UserEntity();
     userEntity.id = id;
@@ -28,7 +30,15 @@ export class UserDto {
     userEntity.createdAt = createdAt;
     userEntity.updatedAt = updatedAt;
     userEntity.deletedAt = deletedAt;
-    userEntity.roles = roles;
+    userEntity.roles = roles.map((role) => {
+      const roleEntity = new RoleEntity();
+      roleEntity.id = role.id;
+      roleEntity.name = role.name;
+      return roleEntity;
+    });
+    userEntity.address = address;
     return userEntity;
   }
+
+  // static dataToDomain
 }

@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, JoinTable, ManyToMany, PrimaryColumn } from 'typeorm';
+import { RoleEntity } from '../../../modules/role/infraestructure/entities/role.entity';
 
 @Entity({ name: 'user' })
 export class UserEntity {
@@ -32,5 +33,7 @@ export class UserEntity {
   @Column({ type: 'datetime', nullable: true })
   deletedAt: Date;
 
-  roles: any[];
+  @ManyToMany(() => RoleEntity, (role) => role.users, { eager: true })
+  @JoinTable() // table dominante de la relación
+  roles: RoleEntity[];
 }

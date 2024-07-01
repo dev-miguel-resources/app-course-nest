@@ -23,11 +23,11 @@
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/platform-express": "^9.0.0",
-    "mongodb": "6.7.0",
-    "mysql2": "3.9.7",
-    "reflect-metadata": "0.1.13",
+    "mongodb": "5.9.2",
+    "mysql2": "3.6.5",
+    "reflect-metadata": "0.1.14",
     "rxjs": "^7.2.0",
-    "typeorm": "0.3.20",
+    "typeorm": "0.3.17",
     "uuid": "9.0.1"
   },
   "devDependencies": {

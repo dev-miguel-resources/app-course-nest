@@ -1,4 +1,5 @@
-import { UserEntity } from 'src/modules/user/infraestructure/user.entity';
+import { UserEntity } from '../../../modules/user/infraestructure/user.entity';
+import { RoleEntity } from '../../../modules/role/infraestructure/entities/role.entity';
 import { DataSource } from 'typeorm';
 
 export const databaseProviders = [
@@ -12,12 +13,11 @@ export const databaseProviders = [
         username: 'mchamorro',
         password: '12345',
         database: 'db',
-        entities: [UserEntity],
+        entities: [UserEntity, RoleEntity],
         synchronize: true, // dev
         logging: true, // dev
       });
 
-      console.log('Database connected');
       return dataSource.initialize(); // devulve la instancia de la bdd a partir del token
     },
   },
@@ -38,7 +38,7 @@ export const databaseProviders = [
         logging: true, // dev
       });
 
-      return dataSource.initialize(); // devulve la instancia del mongo server
+      return dataSource.initialize(); // devuelve la instancia del mongo server
     },
   },
 ];
