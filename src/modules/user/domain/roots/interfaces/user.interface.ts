@@ -6,13 +6,13 @@ export interface UserEssentials {
   readonly image: string;
   readonly email: string;
   readonly password: string;
-  readonly refreshToken: string;
   readonly roles: Role[];
 }
 
 export interface UserOptionals {
   readonly id: string;
   readonly address: Address;
+  refreshToken: string;
   readonly createdAt: Date;
   readonly updatedAt: Date;
   readonly deletedAt: Date;

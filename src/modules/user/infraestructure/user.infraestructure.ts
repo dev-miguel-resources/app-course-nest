@@ -4,8 +4,9 @@ import { UserRepository } from '../domain/repositories/user.repository';
 import { User } from '../domain/roots/user';
 import { UserDto } from './dtos/user.dto';
 import { UserEntity } from './user.entity';
-import { Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 
+@Injectable()
 export class UserInfraestructure implements UserRepository {
   constructor(
     @Inject('USER_REPOSITORY')

@@ -1,0 +1,21 @@
+### Create User
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+    "id": "169753fa-70b6-4e8e-925d-4fdc0f8e21ee",
+    "fullname": "Mauricio Riveras",
+    "email": "mauri@gmail.com",
+    "image": "foto.jpg",
+    "password": "Mauricio123",
+    "roles": [{"id": "27b8bdf2-1ccd-48ea-8447-0eabc75c5b26"}, {"id": "35e7731b-1862-4982-afc0-d7f64e26f1f4"}],
+    "address": {
+        "street": "La Legua 2",
+        "number": 122,
+        "city": "Caracas",
+        "country": "Venezuela"
+    }
+}
+
+
+

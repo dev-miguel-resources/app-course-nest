@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsString, IsUUID, MinLength } from 'class-validator';
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUUID,
+  MinLength,
+} from 'class-validator';
 
 export class Role {
   @IsNotEmpty()
@@ -6,7 +12,7 @@ export class Role {
   @IsUUID()
   id: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsString()
   @MinLength(3)
   name: string;

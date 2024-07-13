@@ -1,4 +1,5 @@
 // fábrica con las reglas de negocio de User
+import { v4 as uuidv4 } from 'uuid';
 import { EmailVO } from '../value-objects/email.vo';
 import { FullnameVO } from '../value-objects/fullname.vo';
 import { IdVO } from '../value-objects/id.vo';
@@ -15,6 +16,8 @@ export class UserFactory {
     RolesVO.create(props.roles);
     FullnameVO.create(props.fullname);
     EmailVO.create(props.email);
+
+    props.refreshToken = uuidv4();
 
     return new User(props);
   }
