@@ -3,17 +3,17 @@ POST http://localhost:3000/users
 Content-Type: application/json
 
 {
-    "id": "169753fa-70b6-4e8e-925d-4fdc0f8e21ee",
-    "fullname": "Mauricio Riveras",
-    "email": "mauri@gmail.com",
+    "id": "fd174309-3b22-4916-aa2e-dd9c0e4715d0",
+    "fullname": "Jaime Villagran",
+    "email": "jaimes@gmail.com",
     "image": "foto.jpg",
-    "password": "Mauricio123",
+    "password": "Jaime123",
     "roles": [{"id": "27b8bdf2-1ccd-48ea-8447-0eabc75c5b26"}, {"id": "35e7731b-1862-4982-afc0-d7f64e26f1f4"}],
     "address": {
         "street": "La Legua 2",
-        "number": 122,
-        "city": "Caracas",
-        "country": "Venezuela"
+        "number": 123,
+        "city": "Santiago",
+        "country": "Chile"
     }
 }
 
