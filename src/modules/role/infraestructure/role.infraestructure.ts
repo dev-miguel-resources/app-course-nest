@@ -1,10 +1,12 @@
 import { Repository } from 'typeorm';
 import { Role } from '../domain/role';
 import { RoleEntity } from './entities/role.entity';
-import { Inject } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { RoleDto } from './dtos/role.dto';
+import { RoleRepository } from '../domain/repositories/role.repository';
 
-export class RoleInfraestructure implements RoleInfraestructure {
+@Injectable()
+export class RoleInfraestructure implements RoleRepository {
   constructor(
     @Inject('ROLE_REPOSITORY')
     private readonly repository: Repository<RoleEntity>,

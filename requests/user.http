@@ -17,5 +17,10 @@ Content-Type: application/json
     }
 }
 
+### List users
+GET http://localhost:3000/users
+Content-Type: application/json
 
-
+### Get user by id
+GET http://localhost:3000/users/169753fa-70b6-4e8e-925d-4fdc0f8e21ee
+Content-Type: application/json

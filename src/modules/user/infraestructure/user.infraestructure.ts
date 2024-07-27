@@ -1,5 +1,5 @@
 //import { UserRepository } from '../domain/repositories/user.repository';
-import { Repository } from 'typeorm';
+import { IsNull, Repository } from 'typeorm';
 import { UserRepository } from '../domain/repositories/user.repository';
 import { User } from '../domain/roots/user';
 import { UserDto } from './dtos/user.dto';
@@ -19,19 +19,25 @@ export class UserInfraestructure implements UserRepository {
     return user;
   }
 
+  async list(): Promise<User[]> {
+    const users = await this.repository.find({
+      where: { deletedAt: IsNull() },
+    });
+    return UserDto.fromDataToDomain(users) as User[];
+  }
+
+  async findById(id: string): Promise<User> {
+    const user = await this.repository.findOne({
+      where: { deletedAt: IsNull(), id },
+    });
+    return UserDto.fromDataToDomain(user) as User;
+  }
+
   findByEmail(email: string): Promise<User> {
     throw new Error('Method Not implemented');
   }
 
   findByRefreshToken(refreshToken: string): Promise<User> {
-    throw new Error('Method Not implemented');
-  }
-
-  findById(id: string): Promise<User> {
-    throw new Error('Method Not implemented');
-  }
-
-  list(): Promise<User[]> {
     throw new Error('Method Not implemented');
   }
 
