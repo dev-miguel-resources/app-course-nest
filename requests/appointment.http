@@ -1,0 +1,12 @@
+### Crear appointment
+POST http://localhost:3000/appointments
+Content-Type: application/json
+
+{
+    "patientId": "d0b9d7e0-9f1b-4c3a-8f5a-6f6f1e1b1a1a",
+    "doctorId": "d0b9d7e0-9f1b-4c3a-8f5a-6f6f1e1b1a1a",
+    "specialtyId": "d0b9d7e0-9f1b-4c3a-8f5a-6f6f1e1b1a1a",
+    "centerId": 1,
+    "date": "2021-10-10T15:00:00.000Z",
+    "countryIso": "MX"
+}
