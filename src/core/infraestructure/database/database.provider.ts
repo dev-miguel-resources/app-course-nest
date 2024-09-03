@@ -2,6 +2,7 @@ import { UserEntity } from '../../../modules/user/infraestructure/user.entity';
 import { RoleEntity } from '../../../modules/role/infraestructure/entities/role.entity';
 import { DataSource } from 'typeorm';
 import { CourseEntity } from 'src/modules/course/infraestructure/entities/course.entity';
+import { ScheduleEntity } from 'src/modules/schedule/infraestructure/entities/schedule.entity';
 
 export const databaseProviders = [
   {
@@ -14,7 +15,7 @@ export const databaseProviders = [
         username: 'mchamorro',
         password: '12345',
         database: 'db',
-        entities: [UserEntity, RoleEntity, CourseEntity],
+        entities: [UserEntity, RoleEntity, CourseEntity, ScheduleEntity],
         synchronize: true, // dev
         logging: true, // dev
       });

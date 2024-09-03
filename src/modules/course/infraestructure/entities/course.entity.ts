@@ -1,4 +1,5 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { ScheduleEntity } from 'src/modules/schedule/infraestructure/entities/schedule.entity';
+import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
 
 @Entity({ name: 'course' })
 export class CourseEntity {
@@ -20,5 +21,6 @@ export class CourseEntity {
   @Column({ type: 'boolean' })
   isDeleted: boolean;
 
-  // próxima clase
+  @OneToMany(() => ScheduleEntity, (schedule) => schedule.course)
+  schedules: ScheduleEntity[];
 }
