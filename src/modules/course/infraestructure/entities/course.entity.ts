@@ -1,5 +1,6 @@
-import { ScheduleEntity } from 'src/modules/schedule/infraestructure/entities/schedule.entity';
 import { Column, Entity, OneToMany, PrimaryColumn } from 'typeorm';
+
+import { ScheduleEntity } from 'src/modules/schedule/infraestructure/entities/schedule.entity';
 
 @Entity({ name: 'course' })
 export class CourseEntity {

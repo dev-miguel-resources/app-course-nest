@@ -5,6 +5,7 @@ import { AppoinmentCOCommand } from '../../application/commands/appointment.co.c
 import { AppoinmentMXCommand } from '../../application/commands/appointment.mx.command';
 import { CommandBus } from '@nestjs/cqrs';
 import { AppoinmentCreateDTO } from './dtos/appoinment.create.dto';
+import { ApiTags } from '@nestjs/swagger';
 
 const countryCommands = {
   CL: AppoinmentCLCommand,
@@ -12,6 +13,7 @@ const countryCommands = {
   MX: AppoinmentMXCommand,
 };
 
+@ApiTags('Appointment')
 @Controller('appointments')
 export class AppointmentController {
   // recibes una dy

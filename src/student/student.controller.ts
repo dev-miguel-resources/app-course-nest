@@ -1,7 +1,9 @@
 import { Controller, Get, Inject } from '@nestjs/common';
 
 import { StudentService } from './student.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('Student')
 @Controller('students') // app.use("/students", StudentController), así sería en express
 export class StudentController {
   constructor(

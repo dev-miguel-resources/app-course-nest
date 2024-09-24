@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+/*import { Controller, Get } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller() // -> /
@@ -56,5 +56,27 @@ export class UsersController {
   @MetodoGet('/list')
   list() {
     console.log('list');
+  }
+}*/
+
+/*Cuando se utiliza el decorador @ApiExcludeController() en un controlador, este controlador y 
+todas sus rutas asociadas no aparecerán en la documentación Swagger generada automáticamente. 
+Esto es útil en los siguientes casos:
+Controladores internos o administrativos: Si tienes controladores que no deberían 
+ser accesibles públicamente o que están destinados solo para administración interna, 
+es posible que desees ocultarlos de la documentación.*/
+import { Controller, Get } from '@nestjs/common';
+import { ApiExcludeController } from '@nestjs/swagger';
+
+import { AppService } from './app.service';
+
+@ApiExcludeController()
+@Controller()
+export class AppController {
+  constructor(private readonly appService: AppService) {}
+
+  @Get()
+  getHello(): string {
+    return 'hola';
   }
 }

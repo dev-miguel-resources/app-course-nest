@@ -1,4 +1,4 @@
-import slugify from 'slugify';
+//import slugify from 'slugify';
 import { Inject, Injectable } from '@nestjs/common';
 import { CourseRepository } from '../../domain/repositories/course.repository';
 import { CourseInfraestructure } from '../../infraestructure/course.infraestructure';
@@ -10,7 +10,7 @@ export class CourseService {
     private readonly repository: CourseRepository,
   ) {}
 
-  async generateSlug(title: string): Promise<string> {
+  /*async generateSlug(title: string): Promise<string> {
     // recibir el slug generado
     let slugGenerated = '';
 
@@ -34,5 +34,5 @@ export class CourseService {
 
     // devolvemos el slug
     return slugGenerated;
-  }
+  }*/
 }

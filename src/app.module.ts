@@ -6,16 +6,21 @@ import { UserModule } from './modules/user/infraestructure/presentation/user.mod
 import { RoleModule } from './modules/role/interfaces/role.module';
 import { AppoinmentModule } from './modules/appoinment/infraestructure/presentation/appointment.module';
 import { CourseModule } from './modules/course/infraestructure/presentation/course.module';
+import { ScheduleModule } from './modules/schedule/infraestructure/presentation/schedule.module';
+import { ConfigModule } from '@nestjs/config';
+import { HealthController } from './health/health.controller';
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     StudentModule,
     UserModule,
     RoleModule,
     AppoinmentModule,
     CourseModule,
+    ScheduleModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, HealthController],
   providers: [AppService],
 })
 export class AppModule {}

@@ -69,6 +69,7 @@ export class Schedule {
   private updatedAt: Date | null;
   private deletedAt: Date | null;
   // pendiente: sessions
+  readonly sessionsTotal: number;
 
   constructor(props: ScheduleProps) {
     // falta algo con eventos

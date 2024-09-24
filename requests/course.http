@@ -3,5 +3,5 @@ POST http://localhost:3000/courses
 Content-Type: application/json
 
 {
-    "title": "Nest Advanced 2024"
+    "title": "Node.js Advanced 2024"
 }

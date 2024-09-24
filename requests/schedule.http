@@ -1,0 +1,22 @@
+### Create
+POST http://localhost:3000/schedules
+content-type: application/json
+
+{
+    "id": "d55e6591-65d1-471e-8933-e1046f174ce1",
+    "title": "Nest - Marzo 2024",
+    "type": "PRO",
+    "summary": "Aprende Nest en Marzo 2024",
+    "slogan": "Aprende bien Angular",
+    "prices": {
+        "CLP": 100,
+        "USD": 30
+    },
+    "dateStart": "2024-03-01T00:00:00.000Z",
+    "hourStart": "2024-03-01T13:30:00.000Z",
+    "hourEnd": "2024-03-01T18:30:00.000Z",
+    "duration": 50,
+    "frequency": "DAILY",
+    "courseId": "b3d2de17-a9ee-43a1-80a7-7b6f5e1f8479",
+    "sessionsTotal": 10
+}

@@ -1,5 +1,5 @@
 import { Schedule } from '../roots/schedule';
-import { PaginateResult } from '../../../../../dist/core/domain/interfaces/paginate.interface';
+import { PaginateResult } from 'src/core/domain/interfaces/paginate.interface';
 
 export interface ScheduleRepository {
   save(schedule: Schedule): Promise<Schedule>;

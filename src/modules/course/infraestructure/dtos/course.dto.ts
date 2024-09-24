@@ -1,11 +1,20 @@
 import { plainToInstance } from 'class-transformer';
-import { CourseEntity } from '../entities/course.entity';
-import { Course, CourseProps } from '../../domain/roots/course';
 import { PaginateResult } from 'src/core/domain/interfaces/paginate.interface';
 
-export class CourseDTO {
+import { Course, CourseProps } from '../../domain/roots/course';
+import { CourseEntity } from '../entities/course.entity';
+
+export class CourseDto {
   static fromDomainToData(course: Course): CourseEntity {
     const courseEntity = plainToInstance(CourseEntity, course.properties);
+    // const courseEntity = new CourseEntity();
+    // courseEntity.id = course.properties.id;
+    // courseEntity.title = course.properties.title;
+    // courseEntity.slug = course.properties.slug;
+    // courseEntity.createdAt = course.properties.createdAt;
+    // courseEntity.updatedAt = course.properties.updatedAt;
+    // courseEntity.isDeleted = course.properties.isDeleted;
+
     return courseEntity;
   }
 
@@ -25,7 +34,6 @@ export class CourseDTO {
       updatedAt: courseEntity.updatedAt,
       isDeleted: courseEntity.isDeleted,
     };
-
     const course = new Course(props);
 
     return course;

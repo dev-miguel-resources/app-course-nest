@@ -1,10 +1,10 @@
-import { PaginateResult } from 'dist/core/domain/interfaces/paginate.interface';
+import { PaginateResult } from 'src/core/domain/interfaces/paginate.interface';
 import { ScheduleRepository } from '../domain/repositories/schedule.repository';
 import { Schedule } from '../domain/roots/schedule';
 import { IsNull, Repository } from 'typeorm';
 import { Inject } from '@nestjs/common';
 import { ScheduleEntity } from './entities/schedule.entity';
-import { ScheduleDTO } from './dtos/schedule.dto';
+import { ScheduleDto } from './dtos/schedule.dto';
 
 export class ScheduleInfraestructure implements ScheduleRepository {
   constructor(
@@ -13,7 +13,7 @@ export class ScheduleInfraestructure implements ScheduleRepository {
   ) {}
 
   async save(schedule: Schedule): Promise<Schedule> {
-    const userEntity = ScheduleDTO.fromDomainToData(schedule);
+    const userEntity = ScheduleDto.fromDomainToData(schedule);
 
     await this.repository.save(userEntity);
 
@@ -26,7 +26,7 @@ export class ScheduleInfraestructure implements ScheduleRepository {
 
     if (!scheduleEntity) return null;
 
-    return ScheduleDTO.fromDataToDomain(scheduleEntity) as Schedule;
+    return ScheduleDto.fromDataToDomain(scheduleEntity) as Schedule;
   }
   async findAll(): Promise<Schedule[]> {
     const listScheduleEntity = await this.repository.find({
@@ -35,7 +35,7 @@ export class ScheduleInfraestructure implements ScheduleRepository {
 
     if (!listScheduleEntity) return null;
 
-    return ScheduleDTO.fromDataToDomain(listScheduleEntity) as Schedule[];
+    return ScheduleDto.fromDataToDomain(listScheduleEntity) as Schedule[];
   }
 
   async findByPage(
@@ -53,6 +53,6 @@ export class ScheduleInfraestructure implements ScheduleRepository {
 
     if (!records) return null;
 
-    return ScheduleDTO.fromDataToDomainPaginate(records, total);
+    return ScheduleDto.fromDataToDomainPaginate(records, total);
   }
 }

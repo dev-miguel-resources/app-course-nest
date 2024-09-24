@@ -1,3 +1,6 @@
+import { plainToInstance } from 'class-transformer';
+import { PaginateResult } from 'src/core/domain/interfaces/paginate.interface';
+
 import { CourseEntity } from 'src/modules/course/infraestructure/entities/course.entity';
 import {
   FREQUENCY,
@@ -7,14 +10,11 @@ import {
   TYPE_COURSE,
 } from '../../domain/roots/schedule';
 import { ScheduleEntity } from '../entities/schedule.entity';
-import { plainToInstance } from 'class-transformer';
-import { PaginateResult } from 'src/core/domain/interfaces/paginate.interface';
 
-export class ScheduleDTO {
+export class ScheduleDto {
   static fromDomainToData(schedule: Schedule): ScheduleEntity {
     const courseEntity = new CourseEntity();
-
-    courseEntity.id = schedule.properties.id;
+    courseEntity.id = schedule.properties.courseId;
 
     const data = { ...schedule.properties, course: courseEntity };
 
@@ -26,11 +26,10 @@ export class ScheduleDTO {
   static fromDataToDomain(
     scheduleEntity: ScheduleEntity | ScheduleEntity[],
   ): Schedule | Schedule[] {
-    if (Array.isArray(scheduleEntity)) {
+    if (Array.isArray(scheduleEntity))
       return scheduleEntity.map(
         (schedule) => this.fromDataToDomain(schedule) as Schedule,
       );
-    }
 
     const props: ScheduleProps = {
       id: scheduleEntity.id,
@@ -52,9 +51,8 @@ export class ScheduleDTO {
       updatedAt: scheduleEntity.updatedAt,
       deletedAt: scheduleEntity.deletedAt,
       courseId: scheduleEntity.course.id,
-      // pendiente para más adelante
+      // pendiente
     };
-
     const schedule = new Schedule(props);
 
     return schedule;

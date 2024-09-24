@@ -6,7 +6,9 @@ import { UserCreate } from 'src/modules/user/application/user.create';
 import { UserGetOneDTO } from '../dtos/user.get.one.dto';
 import { UserGetOne } from 'src/modules/user/application/user.get.one';
 import { UserList } from '../../../application/user.list';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('User')
 @Controller('users')
 export class UserController {
   constructor(
@@ -38,7 +40,6 @@ export class UserController {
   async getOne(@Param() params: UserGetOneDTO) {
     const { id } = params;
     const user = await this.userGetOne.getOne(id);
-    // pendiente
     return user;
   }
 }
