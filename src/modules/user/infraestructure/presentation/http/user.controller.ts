@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { UserCreateDTO } from '../dtos/user.create.dto';
 import { UserProperties } from 'src/modules/user/domain/roots/interfaces/user.interface';
 import { UserFactory } from 'src/modules/user/domain/roots/user.factory';
@@ -7,6 +7,13 @@ import { UserGetOneDTO } from '../dtos/user.get.one.dto';
 import { UserGetOne } from 'src/modules/user/application/user.get.one';
 import { UserList } from '../../../application/user.list';
 import { ApiTags } from '@nestjs/swagger';
+import { Crypt } from 'src/core/infraestructure/presentation/services/crypt.service';
+import {
+  RoleEnum,
+  Roles,
+} from 'src/core/infraestructure/presentation/decorators/roles';
+import { AuthenticationGuard } from 'src/core/infraestructure/presentation/guards/authentication.guard';
+import { AuthorizationGuard } from '../../../../../core/infraestructure/presentation/guards/authorization.guard';
 
 @ApiTags('User')
 @Controller('users')
@@ -19,18 +26,20 @@ export class UserController {
 
   @Post()
   async insert(@Body() body: UserCreateDTO) {
-    const userProperties: UserProperties = body;
-
-    // paso importante: validas el negocio
+    const userProperties: UserProperties = {
+      ...body,
+      password: await Crypt.encript(body.password),
+    };
     const user = UserFactory.create(userProperties);
 
-    // validas el proceso http
-    await this.userCreate.save(user);
+    const userSaved = await this.userCreate.save(user);
 
-    return body;
+    return userSaved;
   }
 
   @Get()
+  @Roles(RoleEnum.STUDENT, RoleEnum.TEACHER)
+  @UseGuards(AuthenticationGuard, AuthorizationGuard)
   async list() {
     const users = await this.userList.getList();
     return users;
