@@ -1,5 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+
 import { RoleEnum, ROLES_KEY } from '../decorators/roles';
 
 @Injectable()
@@ -19,6 +20,8 @@ export class AuthorizationGuard implements CanActivate {
     console.log('user.roles', user.roles);
     console.log('rolesAllowed', rolesAllowed);
 
+    // Verificar si el usuario tiene **todos** los roles necesarios
+    //return rolesAllowed.every((role) => user.roles.includes(role));
     return rolesAllowed.some((role) => user.roles?.includes(role));
   }
 }

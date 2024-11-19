@@ -8,6 +8,9 @@ export class Auth {
   }
 
   get properties() {
-    return { email: this.email, password: this.password };
+    return {
+      email: this.email,
+      password: this.password,
+    };
   }
 }

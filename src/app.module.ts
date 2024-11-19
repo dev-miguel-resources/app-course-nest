@@ -9,6 +9,7 @@ import { CourseModule } from './modules/course/infraestructure/presentation/cour
 import { ScheduleModule } from './modules/schedule/infraestructure/presentation/schedule.module';
 import { ConfigModule } from '@nestjs/config';
 import { HealthController } from './health/health.controller';
+import { AuthModule } from './modules/auth/infraestructure/presentation/auth.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { HealthController } from './health/health.controller';
     AppoinmentModule,
     CourseModule,
     ScheduleModule,
+    AuthModule,
   ],
   controllers: [AppController, HealthController],
   providers: [AppService],

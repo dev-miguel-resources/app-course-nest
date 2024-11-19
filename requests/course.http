@@ -1,7 +1,7 @@
 ### Create Course
-POST http://localhost:3000/courses
+POST http://localhost:3000/v2/courses
 Content-Type: application/json
 
 {
-    "title": "Node.js Advanced 2024"
+    "title": "Vuex.js Advanced 2024"
 }

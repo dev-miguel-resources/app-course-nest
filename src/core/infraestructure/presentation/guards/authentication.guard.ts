@@ -8,6 +8,8 @@ import {
 import { Request } from 'express';
 import * as jwt from 'jsonwebtoken';
 
+import { AppService } from '../../../../app.service';
+
 @Injectable()
 export class AuthenticationGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
@@ -16,8 +18,8 @@ export class AuthenticationGuard implements CanActivate {
     if (!token) throw new UnauthorizedException('Token not found');
 
     try {
-      const payload = jwt.verify(token, 'secret');
-      request.user = { roles: payload.roles.map((role) => role.name) };
+      const payload = jwt.verify(token, AppService.jwt_secret);
+      request.user = { roles: payload.roles.map((role: any) => role.name) };
     } catch (error) {
       if (error.name === 'TokenExpiredError') {
         throw new ConflictException('Token expired');
@@ -26,7 +28,7 @@ export class AuthenticationGuard implements CanActivate {
       }
     }
 
-    return true; // next() -> verificar si resuelvo y termino el ciclo de vida de ejecución ó debo pasar a un siguiente paso
+    return true;
   }
 
   private extractTokenFromRequest(request: Request): string | undefined {

@@ -76,3 +76,5 @@ export class User {
     return new User(props);
   }*/
 }
+
+export { UserProperties };

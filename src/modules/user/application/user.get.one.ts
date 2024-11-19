@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { UserRepository } from '../domain/repositories/user.repository';
 import { UserInfraestructure } from '../infraestructure/user.infraestructure';
-import { UserResponseDTO } from './dtos/user.reponse.dto';
+import { UserResponseDTO } from './dtos/user.response.dto';
 
 @Injectable()
 export class UserGetOne {

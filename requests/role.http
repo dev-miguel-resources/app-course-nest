@@ -1,3 +1,3 @@
 ### List roles
-GET http://localhost:3000/roles
+GET http://localhost:3000/v1/roles
 Content-Type: application/json

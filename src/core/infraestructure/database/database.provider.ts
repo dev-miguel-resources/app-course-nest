@@ -3,6 +3,7 @@ import { RoleEntity } from '../../../modules/role/infraestructure/entities/role.
 import { DataSource } from 'typeorm';
 import { CourseEntity } from 'src/modules/course/infraestructure/entities/course.entity';
 import { ScheduleEntity } from 'src/modules/schedule/infraestructure/entities/schedule.entity';
+import { AppService } from '../../../app.service';
 
 export const databaseProviders = [
   {
@@ -10,17 +11,17 @@ export const databaseProviders = [
     useFactory: async () => {
       const dataSource = new DataSource({
         type: 'mysql',
-        host: 'localhost',
-        port: 3310,
-        username: 'mchamorro',
-        password: '12345',
-        database: 'db',
+        host: AppService.db_host,
+        port: AppService.db_port,
+        username: AppService.db_username,
+        password: AppService.db_password,
+        database: AppService.db_database,
         entities: [UserEntity, RoleEntity, CourseEntity, ScheduleEntity],
-        synchronize: true, // dev
-        logging: true, // dev
+        synchronize: true,
+        logging: false,
       });
 
-      return dataSource.initialize(); // devulve la instancia de la bdd a partir del token
+      return dataSource.initialize();
     },
   },
   {

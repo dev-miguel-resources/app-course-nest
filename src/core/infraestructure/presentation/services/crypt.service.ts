@@ -1,7 +1,7 @@
 import * as bcrypt from 'bcryptjs';
 
 export class Crypt {
-  static async encript(password: string): Promise<string> {
+  static async encrypt(password: string): Promise<string> {
     return bcrypt.hash(password, 10);
   }
 

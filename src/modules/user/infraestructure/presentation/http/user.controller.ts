@@ -4,15 +4,15 @@ import { UserProperties } from 'src/modules/user/domain/roots/interfaces/user.in
 import { UserFactory } from 'src/modules/user/domain/roots/user.factory';
 import { UserCreate } from 'src/modules/user/application/user.create';
 import { UserGetOneDTO } from '../dtos/user.get.one.dto';
-import { UserGetOne } from 'src/modules/user/application/user.get.one';
+import { UserGetOne } from '../../../application/user.get.one';
 import { UserList } from '../../../application/user.list';
 import { ApiTags } from '@nestjs/swagger';
-import { Crypt } from 'src/core/infraestructure/presentation/services/crypt.service';
+import { Crypt } from '../../../../../core/infraestructure/presentation/services/crypt.service';
 import {
   RoleEnum,
   Roles,
 } from 'src/core/infraestructure/presentation/decorators/roles';
-import { AuthenticationGuard } from 'src/core/infraestructure/presentation/guards/authentication.guard';
+import { AuthenticationGuard } from '../../../../../core/infraestructure/presentation/guards/authentication.guard';
 import { AuthorizationGuard } from '../../../../../core/infraestructure/presentation/guards/authorization.guard';
 
 @ApiTags('User')
@@ -28,7 +28,7 @@ export class UserController {
   async insert(@Body() body: UserCreateDTO) {
     const userProperties: UserProperties = {
       ...body,
-      password: await Crypt.encript(body.password),
+      password: await Crypt.encrypt(body.password),
     };
     const user = UserFactory.create(userProperties);
 

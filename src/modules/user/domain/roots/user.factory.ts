@@ -1,14 +1,11 @@
-// fábrica con las reglas de negocio de User
-import { v4 as uuidv4 } from 'uuid';
+import { TokenService } from 'src/core/domain/services/token.service';
 import { EmailVO } from '../value-objects/email.vo';
 import { FullnameVO } from '../value-objects/fullname.vo';
 import { IdVO } from '../value-objects/id.vo';
 import { RefreshTokenVO } from '../value-objects/refresh-token';
 import { RolesVO } from '../value-objects/roles.vo';
-import { User } from './user';
-import { UserProperties } from './interfaces/user.interface';
+import { User, UserProperties } from './user';
 
-// forma 4: ideal
 export class UserFactory {
   static create(props: UserProperties) {
     IdVO.create(props.id);
@@ -17,7 +14,7 @@ export class UserFactory {
     FullnameVO.create(props.fullname);
     EmailVO.create(props.email);
 
-    props.refreshToken = uuidv4();
+    props.refreshToken = TokenService.generateRefreshToken();
 
     return new User(props);
   }
