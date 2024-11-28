@@ -1,5 +1,5 @@
 import { Controller, Get } from '@nestjs/common';
-import { ApiExcludeController, ApiExcludeEndpoint } from '@nestjs/swagger';
+import { ApiExcludeController } from '@nestjs/swagger';
 
 @ApiExcludeController() // esto es para que no se documente en swagger
 @Controller('health')

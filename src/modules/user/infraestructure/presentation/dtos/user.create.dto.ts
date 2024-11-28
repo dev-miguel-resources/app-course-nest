@@ -16,8 +16,8 @@ import { Role } from './role.user.create';
 import { Address } from './address.user.create';
 
 export class UserCreateDTO {
-  @IsNotEmpty()
-  @IsString()
+  @IsNotEmpty({ message: 'ID is not be empty' })
+  @IsString({ message: 'ID must be a string' })
   @IsUUID()
   id: string;
 

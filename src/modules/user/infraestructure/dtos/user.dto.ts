@@ -1,4 +1,4 @@
-import { RoleEntity } from 'src/modules/role/infraestructure/entities/role.entity';
+import { RoleEntity } from '../../../role/infraestructure/entities/role.entity';
 import { User } from '../../domain/roots/user';
 import { UserEntity } from '../user.entity';
 import { Address } from '../presentation/dtos/address.user.create';

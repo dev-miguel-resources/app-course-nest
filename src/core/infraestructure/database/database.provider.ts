@@ -1,8 +1,8 @@
 import { UserEntity } from '../../../modules/user/infraestructure/user.entity';
 import { RoleEntity } from '../../../modules/role/infraestructure/entities/role.entity';
 import { DataSource } from 'typeorm';
-import { CourseEntity } from 'src/modules/course/infraestructure/entities/course.entity';
-import { ScheduleEntity } from 'src/modules/schedule/infraestructure/entities/schedule.entity';
+import { CourseEntity } from '../../../modules/course/infraestructure/entities/course.entity';
+import { ScheduleEntity } from '../../../modules/schedule/infraestructure/entities/schedule.entity';
 import { AppService } from '../../../app.service';
 
 export const databaseProviders = [

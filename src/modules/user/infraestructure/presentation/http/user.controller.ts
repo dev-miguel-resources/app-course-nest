@@ -1,8 +1,8 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { UserCreateDTO } from '../dtos/user.create.dto';
 import { UserProperties } from 'src/modules/user/domain/roots/interfaces/user.interface';
-import { UserFactory } from 'src/modules/user/domain/roots/user.factory';
-import { UserCreate } from 'src/modules/user/application/user.create';
+import { UserFactory } from '../../../domain/roots/user.factory';
+import { UserCreate } from '../../../application/user.create';
 import { UserGetOneDTO } from '../dtos/user.get.one.dto';
 import { UserGetOne } from '../../../application/user.get.one';
 import { UserList } from '../../../application/user.list';
@@ -11,7 +11,7 @@ import { Crypt } from '../../../../../core/infraestructure/presentation/services
 import {
   RoleEnum,
   Roles,
-} from 'src/core/infraestructure/presentation/decorators/roles';
+} from '../../../../../core/infraestructure/presentation/decorators/roles';
 import { AuthenticationGuard } from '../../../../../core/infraestructure/presentation/guards/authentication.guard';
 import { AuthorizationGuard } from '../../../../../core/infraestructure/presentation/guards/authorization.guard';
 

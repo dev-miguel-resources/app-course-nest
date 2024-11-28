@@ -1,5 +1,5 @@
-import { CourseEntity } from 'src/modules/course/infraestructure/entities/course.entity';
 import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+import { CourseEntity } from '../../../course/infraestructure/entities/course.entity';
 
 import { Prices } from '../../domain/entities/prices';
 

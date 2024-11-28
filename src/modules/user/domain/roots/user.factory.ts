@@ -1,4 +1,4 @@
-import { TokenService } from 'src/core/domain/services/token.service';
+import { TokenService } from '../../../../core/domain/services/token.service';
 import { EmailVO } from '../value-objects/email.vo';
 import { FullnameVO } from '../value-objects/fullname.vo';
 import { IdVO } from '../value-objects/id.vo';
