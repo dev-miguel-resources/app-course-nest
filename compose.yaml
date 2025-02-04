@@ -2,93 +2,26 @@ version: '3.8'
 
 services:
   mysql-server:
-    image: mysql:8
-    container_name: mysql-server
-    environment:
-      MYSQL_ROOT_PASSWORD: 12345
-      MYSQL_DATABASE: db
-      MYSQL_USER: mchamorro
-      MYSQL_PASSWORD: 12345
-    restart: unless-stopped # se reinicia solo cuando se detenga
-    ports: 
-      - 3310:3306
-    networks:
-      - net-app
-    volumes:
-      - vol-app:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", 'mysqladmin', 'ping', '-h', 'localhost']
-      interval: 10s # cada 10s realice la verificación
-      timeout: 10s # espera máxima x intento
-      retries: 3 # política de reintentos. 
-      start_interval: 5s # espera que se le da antes de empezar las verificaciones
-
-  mysql-client:
-    image: phpmyadmin
-    container_name: mysql-client
-    environment:
-      PMA_ARBITRARY: 1 # lo que genera es una conexión disponible y segura con este proveedor
-    restart: unless-stopped # se reinicia solo cuando se detenga
-    ports: 
-      - 8080:80
-    networks:
-      - net-app
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost"]
-      interval: 10s
-      timeout: 10s
-      retries: 3
-      start_period: 5s
-    depends_on:
-      mysql-server: # espera que arranque el servidor de mysql para comenzar este
-        condition: service_healthy
-
-  mongo-server:
-    image: mongo:4
-    container_name: mongo-server
-    restart: unless-stopped
-    ports:
-      - 27017:27017
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: root
-      MONGO_INITDB_ROOT_PASSWORD: 12345
-      MONGO_INITDB_DATABASE: db
-    volumes:
-      - vol-app-mongo:/data/db
-    networks:
-      - net-app
-    healthcheck:
-      test: [
-        "CMD", 
-        "mongo", 
-        "--quiet", 
-        "127.0.0.1/test", 
-        '--eval', 
-        "'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)'"
-      ]
-      interval: 10s
-      timeout: 10s
-      retries: 3
-      start_period: 5s
-
-  mongo-client:
-    image: mongo-express:1.0.0-18-alpine3.18
-    container_name: mongo-client
-    restart: unless-stopped
-    ports:
-      - 8081:8081
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: root
-      ME_CONFIG_MONGODB_ADMINPASSWORD: 12345
-      ME_CONFIG_BASICAUTH_USERNAME: root
-      ME_CONFIG_BASICAUTH_PASSWORD: 12345
-      ME_CONFIG_MONGODB_SERVER: mongo-server
-      ME_CONFIG_MONGODB_PORT: 27017
-    networks:
-      - net-app
-    depends_on:
-      mongo-server:
-        condition: service_healthy
+   image: mysql:8
+   container_name: mysql-server
+   environment:
+    MYSQL_ROOT_PASSWORD: 12345
+    MYSQL_DATABASE: db 
+    MYSQL_USER: mchamorro
+    MYSQL_PASSWORD: 12345
+   restart: unless-stopped
+   ports:
+     - 3310:3306
+   networks:
+     - net-app
+   volumes:
+     - vol-app:/var/lib/mysql
+   healthcheck:
+     test: ["CMD", 'mysqladmin', 'ping', '-h', 'localhost'] # comando de consulta al healtcheak.
+     interval: 10s # Verificaciones cada x tiempo.
+     timeout: 10s # Máximo de espero por intento.
+     retries: 3 # Si falla 3 veces, se considera inactivo.
+     start_interval: 5s # Espera de 5s antes de la primera verificación de ping.
 
 networks:
   net-app:
@@ -99,6 +32,5 @@ volumes:
   vol-app:
     name: vol-app
   vol-app-mongo:
-    name: vol-app-mongo  
-
-  
+    name: vol-app-mongo
+   
