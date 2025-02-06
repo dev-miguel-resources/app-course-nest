@@ -30,7 +30,7 @@ export const databaseProviders = [
       const dataSource = new DataSource({
         type: 'mongodb',
         host: 'localhost',
-        //url: 'mongodb://root:12345@localhost/db?authSource=admin'
+        url: 'mongodb://root:12345@localhost/db?authSource=admin',
         port: 27017,
         username: 'root',
         password: '12345',

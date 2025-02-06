@@ -3,5 +3,5 @@ POST http://localhost:3000/v2/courses
 Content-Type: application/json
 
 {
-    "title": "AWS Advanced 2025"
+    "title": "Kubernetes Course 2025"
 }
