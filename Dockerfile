@@ -1,64 +1,82 @@
-# Stage: 1: base (development)
-# 1. Define la versión de la imagen y un alias stage
+# define la versión y le da un alias
+# El archivo debe llamarse Dockerfile
+# docker build -t mi-aplicacion:v1.0 .
+# docker exec -it <nombre_o_id_del_contenedor> sh (entrar a un contenedor)
+# ls para ver la lista
+# cd /path/to/directory
 FROM node:18-alpine as base
 
-# Habilitar la terminal de instalación de recursos externos (Opcional)
-# Habilitar desde la terminal de la imagen, la factibilidad de descargar procesos desde la terminal de algún recurso remoto
+# Habilitar desde la terminal de la imagen, la factibilidad de descargas procesos desde una ruta remota
+# La opción --no-cache le indica a apk que no guarde en caché los índices de los repositorios de paquetes después de la instalación.
 RUN apk add curl bash --no-cache
 
-# Descargar el recurso de una ruta y vincularlo a la imagen (Opcional)
-# La f: significa asegurarse que el recurso se instale en un 100% (forzar)
-# La s: significa guardar el recurso o descarga del mismo
-# sh -s: guarda lo descargado a un directorio x
-# --: pasar a una siguiente etapa de otro parametro
-# -b: procesar el emparejamiento a un directorio lo más rápido posible (recuperar la metadata binaria)
-# /usr/local/bin: recurso local de instalaciones
+# Descargar el recurso de una ruta y vincularlo a la imagen
+# El f significa forzar la instalación en un 100%
+# La s significa el save o descarga del recurso
+# La b significa que el recurso se está descargando mediante procesamiento binario
 RUN curl -sf https://gobinaries.com/tj/node-prune | sh -s -- -b /usr/local/bin
 
-# 2. Se establece el directorio de trabajo raíz, donde se alojarán los archivos de la aplicación
+# Se establece el directorio de trabajo en /build, donde se colocarán los archivos de la aplicación.
 WORKDIR /build
 
-# 3. Copiamos primero los archivos de referencia de dependencias para optimizar el control de paquetes
-# ./ Hace referencia al directorio raíz de trabajo de la imagen
+# Copia solo el archivo package.json al contenedor (para instalar dependencias antes de copiar todo el código, lo que ayuda con la caché de Docker).
+# package.json se copia antes de npm install, permitiendo que Docker reutilice las dependencias si no han cambiado.
+#COPY package.json .
+# COPY package.json package-lock.json ./
 COPY package.json yarn.lock ./
 
-# 4. Ejecutar la instalación de los paquetes
-# frozen-lockfile: es solamente para yarn
-# si están en npm: RUN npm install ci
-RUN yarn install --frozen-lockfile
+# Ejecuta npm install -f, instalando todas las dependencias en /build/node_modules.
+#RUN npm install -f
+# RUN npm install -f --production
+# RUN npm ci
+# Instalaciones 100% reproducibles (usa package-lock.json sin modificarlo).
+#✔ Más rápido que npm install, ya que no recalcula dependencias.
+# ✔ Evita errores en producción (asegura que las versiones sean las mismas que en desarrollo).
+# # Instalar las dependencias de producción y desarrollo
+RUN yarn install --frozen-lockfile #--production
+# Evita cambios inesperados en dependencias
+# Si yarn.lock ya está en el proyecto, Yarn usará exactamente esas versiones.
+# Evita que Yarn descargue versiones más recientes de paquetes.
+# Mejora la reproducibilidad y estabilidad
+# Asegura que cualquier persona o servidor que construya la imagen use las mismas versiones.
 
-# 5. Copiar todos los archivos necesarios de la aplicación (código fuente)
-# punto 1: la raíz de mi app
-# punt 2: la raíz de la imagen
+# Copia todos los archivos de la aplicación al contenedor (incluyendo el código fuente).
 COPY . .
 
-# 6. Ejecutar el script para transpilar el código de ts a js
-# Genera la carpeta dist o build
+# Ejecuta el script npm run build, que en la mayoría de los proyectos:
+# Transpila código TypeScript a JavaScript.
+# Minifica y optimiza los archivos.
+# Genera la carpeta dist/, donde queda el código listo para producción.
+# RUN npm run build
 RUN yarn build
 
-# 7. Reconstruimos los paquetes para que no solo queden los de producción (Opcional)
-# Importante: siempre debe ser después del build para no corromper dicho proceso
-# Nota: Si está --production sin node-prune, se generará la exclusión pero no vendrá
-# el código comprimido ni minificado
+#Refrescamos y dejamos solo las de prod.
 RUN yarn install --production
 
-# Comando para generar la imagen
-# docker build -t my-nest-app:v1.0 .
-
-# Stage 2: production -> js
-# Es la imagen de salida del dockerfile
+# Etapa 2
+# Se usa otra vez la imagen ligera de Node.js 18 en Alpine Linux.
+# Se le asigna el alias production.
 FROM node:18-alpine as production
 
-# Generamos el directorio raíz para recibir los archivos
+# Se establece el directorio de trabajo en /app, donde se colocará la aplicación.
 WORKDIR /app
 
-# Hacemos el traspaso de una imagen a otra
+# Asegurarse de que Yarn esté instalado en la imagen de producción (si es necesario)
+# RUN npm install -g yarn
+# Docker usará la versión de yarn que está en la imagen, sin importar la versión que tengas instalada en tu máquina local.
+# # Instalar una versión específica de Yarn
+# RUN npm install -g yarn@1.22.10
+
+# Se copian los archivos esenciales desde la etapa base, evitando archivos innecesarios:
+# dist/ → Código listo para producción.
+# node_modules/ → Dependencias ya instaladas.
+# package.json → Archivo de configuración de dependencias.
+# .env → Variables de entorno necesarias para la aplicación.
 COPY --from=base /build/dist ./dist
 COPY --from=base /build/node_modules ./node_modules
 COPY --from=base /build/package.json ./package.json
 COPY --from=base /build/.env ./.
 
-# Levantar mi app con el código de js
-# En la imagen final no se ocupa el RUN para ejecutar el comando de salida
+#CMD ["npm", "run", "start:prod"]
 CMD ["yarn", "run", "start:prod"]
 

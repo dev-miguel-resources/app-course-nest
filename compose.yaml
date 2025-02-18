@@ -2,48 +2,49 @@ version: '3.8'
 
 services:
   mysql-server:
-   image: mysql:8
-   container_name: mysql-server
-   environment:
-    MYSQL_ROOT_PASSWORD: 12345
-    MYSQL_DATABASE: db 
-    MYSQL_USER: mchamorro
-    MYSQL_PASSWORD: 12345
-   restart: unless-stopped
-   ports:
-     - 3310:3306
-   networks:
-     - net-app
-   volumes:
-     - vol-app:/var/lib/mysql
-   healthcheck:
-     test: ["CMD", 'mysqladmin', 'ping', '-h', 'localhost'] # comando de consulta interna al healthcheack.
-     interval: 10s # Verificaciones cada x tiempo.
-     timeout: 10s # Máximo de espero por intento.
-     retries: 3 # Si falla 3 veces, se considera inactivo.
-     start_interval: 5s # Espera de 5s antes de la primera verificación de ping.
+    image: mysql:8
+    container_name: mysql-server
+    environment:
+      #MYSQL_ROOT_PASSWORD: 12345 # contraseña del usuario root master solicitado para el acceso a interacciones con la bdd
+      #MYSQL_DATABASE: db
+      #MYSQL_USER: mchamorro
+      #MYSQL_PASSWORD: 12345
+      - .env
+    restart: unless-stopped
+    ports: 
+      - 3310:3306
+    networks:
+      - net-app
+    volumes:
+      - vol-app:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", 'mysqladmin', 'ping', '-h', 'localhost'] # Usa mysqladmin ping para verificar si MySQL está activo.
+      interval: 10s # Verifica cada 10 segundos.
+      timeout: 10s # Máximo de espera por intento.
+      retries: 3 #  Si falla 3 veces, se considera inactivo.
+      start_interval: 5s # Espera 5s antes de la primera verificación.
 
   mysql-client:
     image: phpmyadmin
     container_name: mysql-client
     environment:
-      PMA_ARBITRARY: 1 # Permite recibir conexiones con MYSQL desde su interfaz de phpmyadmin
+      PMA_ARBITRARY: 1 # Permite conexiones arbitrarias a MySQL desde la interfaz de phpMyAdmin.
     restart: unless-stopped
-    ports:
+    ports: 
       - 8080:80
     networks:
       - net-app
     healthcheck:
-      # -f: --fail: se ejecuta si la llamada al recurso falla -> 4xx, 5xx
-      # Los healthcheck si la solicitud es exitosa devuelve un 200
-      test: ["CMD", "curl", "-f", "http://localhost"]
+      # El parámetro -f (abreviatura de --fail) indica que curl debe fallar si la respuesta HTTP tiene un código de estado 4xx o 5xx (errores del cliente o del servidor).
+      # Si el servidor devuelve un código de estado de éxito (por ejemplo, 200 OK), curl no hará nada y el comando se considerará exitoso.
+      test: ["CMD", "curl", "-f", "http://localhost"] # Usa curl para verificar que phpMyAdmin responde en http://localhost.
       interval: 10s
       timeout: 10s
       retries: 3
       start_period: 5s
     depends_on:
-      mysql-server: # Simplemente espera que el otro arranque antes y no que esté healthy
-        condition: service_healthy # up -> verificó
+      mysql-server: # No inicia hasta que mysql-server esté saludable. Si no tuviera condition healty, simplemente dispara primera el servicio dependiente pero nada más
+        condition: service_healthy
 
   mongo-server:
     image: mongo:4
@@ -54,19 +55,19 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: 12345
-      MONGO_UNITDB_DATABASE: db
+      MONGO_INITDB_DATABASE: db
     volumes:
       - vol-app-mongo:/data/db
     networks:
       - net-app
     healthcheck:
       test: [
-        "CMD",
-        "mongo", # ejecutar instrucciones de mongo server desde la terminal (mongo shell)
-        "--quiet", # para acceder al testeo del healthcheck
-        "127.0.0.1/test", # ruta de test desde el local
-        '--eval', # Usa mongo --eval para hacer un ping a la base de datos
-        "'quit(db.runCommand({ ping: 1}).ok ? 0 : 2)'" # Si la respuesta es 0, MongoDB está saludable 
+        "CMD", 
+        "mongo", 
+        "--quiet", 
+        "127.0.0.1/test", 
+        '--eval', # Usa mongo --eval para hacer un ping a la base de datos.
+        "'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)'" # Si la respuesta es 0, MongoDB está saludable.
       ]
       interval: 10s
       timeout: 10s
@@ -90,6 +91,29 @@ services:
       - net-app
     depends_on:
       mongo-server:
+        condition: service_healthy
+  
+  arq-hex-app:
+    build:
+      context: . # hace referencia a la raíz donde va a ir a buscar el Dockerfile
+      dockerfile: Dockerfile
+    image: mi-nest-app:v1.0
+    container_name: app-nest
+    restart: unless-stopped
+    ports:
+      - 3000:3000
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3000/v1/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_interval: 5s
+    networks:
+      - net-app
+    depends_on:
+      mongo-server:
+        condition: service_healthy
+      mysql-server:
         condition: service_healthy
 
 networks:

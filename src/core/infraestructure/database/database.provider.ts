@@ -29,8 +29,10 @@ export const databaseProviders = [
     useFactory: async () => {
       const dataSource = new DataSource({
         type: 'mongodb',
-        host: 'localhost',
-        url: 'mongodb://root:12345@localhost/db?authSource=admin',
+        //host: 'localhost',
+        host: 'mongo-server',
+        //url: 'mongodb://root:12345@localhost/db?authSource=admin',
+        url: 'mongodb://root:12345@mongo-server/db?authSource=admin',
         port: 27017,
         username: 'root',
         password: '12345',
