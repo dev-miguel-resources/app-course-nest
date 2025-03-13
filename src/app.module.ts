@@ -13,7 +13,7 @@ import { AuthModule } from './modules/auth/infraestructure/presentation/auth.mod
 
 @Module({
   imports: [
-    ConfigModule.forRoot(),
+    ConfigModule.forRoot(), // lee las variables de entorno de un .env
     StudentModule,
     UserModule,
     RoleModule,
