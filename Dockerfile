@@ -4,6 +4,93 @@ ARG NODE_VERSION=18-alpine
 # Definimos nuestra imagen base
 FROM node:${NODE_VERSION} as base
 
+# Utilizar la carpeta de datos para alojar archivos administrados propia de linux: usr
+WORKDIR /usr/src/app
+
+# Definir la gestión de las dependencias de cara a prod.
+# Montajes: son para definir escenarios de pasos
+# Tipos: bind (copiar recursos) y cache (evitar redundancias de ejecución)
+# Si con yarn les sucede un problema con el directorio de cache vs lo del local ejecutar: yarn cache clean desde una terminal con permisos de admin
+FROM base as deps
+# \: hace referencia a un salto de linea y que viene una siguiente instrucción
+RUN --mount=type=bind,source=package.json,target=package.json \
+    # necesito que se genere en base a la deficiones del package.json
+    --mount=type=bind,source=yarn.lock,target=yarn.lock \
+    # mount: cache, quiero utilizar la cache de paquetes para que el procesamiento sea más rápido
+    # --mount=type=cache,target=/root/.npm \
+    --mount=type=cache,target=/usr/local/share/.cache/yarn \
+    # Omitir las dependencias de desarrollo y dejar solo las productivas de cara a la imagen final
+    # npm ci --omit=dev --force
+    yarn install --production
+
+# Generamos la transpilación del código
+FROM base as build
+RUN --mount=type=bind,source=package.json,target=package.json \
+    --mount=type=bind,source=yarn.lock,target=yarn.lock \
+    --mount=type=cache,target=/usr/local/share/.cache/yarn \
+    yarn install --frozen-lockfile
+COPY . .
+RUN yarn run build
+
+# Definición de la imagen final
+# Cuando se trabaja con multistage la que está definido al final es la imagen resultante
+FROM base as final
+# Instalar los permisos de llamada de la terminal del docker: instalar recursos externos o verificar estados del recurso
+RUN apk add curl
+# Podemos dejar descripciones a nivel de entorno para la imagen final: versiones, tags, entorno, etc...
+ENV NODE_ENV production
+# Definición para protección de los hackers: Cambiar el root admin. Por ej: cambias de root: /home/root a /home/node
+USER node
+# Debo traerme la referencia del archivo que ejecuta el script de levantamiento de la app
+COPY package.json .
+# Solicito el node_modules ya con solo el código de paquetes que ocupo para que la app funcione
+COPY --from=deps /usr/src/app/node_modules ./node_modules
+# Solicito el código fuente optimizado
+COPY --from=build /usr/src/app/dist ./dist
+# Solicito el traspaso de las variables de entorno
+COPY --from=build /usr/src/app/.env ./.env
+# Ejecutar el arrancado de la app
+CMD yarn run start:prod
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
