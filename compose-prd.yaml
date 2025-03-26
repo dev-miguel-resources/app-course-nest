@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  arq-hex-app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: 101814004029.dkr.ecr.us-east-1.amazonaws.com/arq-hex-node
+    container_name: app-nest
+    restart: unless-stopped
+    ports:
+      - 3000:3000
