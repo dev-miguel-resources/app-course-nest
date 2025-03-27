@@ -23,7 +23,7 @@ phases:
     commands:
       # Acá publicamos la imagen generada
       - docker-compose -f compose-prd.yaml push
-  artifacts:
-    # Este es el objeto de salida como representación a su ejecución de cara al Elastic Beanstalk
-    files:
-      - 'Dockerrun.aws.json'
+artifacts:
+  # Este es el objeto de salida como representación a su ejecución de cara al Elastic Beanstalk
+  files:
+    - 'Dockerrun.aws.json'
