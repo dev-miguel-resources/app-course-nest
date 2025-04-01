@@ -1,4 +1,4 @@
-# Definir variable de entorno para la versión de Node.js
+# Definir variable de entorno para la v. de Node.js
 ARG NODE_VERSION=18-alpine
 
 # Imagen base con Node.js y autenticación a docker hub
