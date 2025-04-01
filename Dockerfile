@@ -1,48 +1,41 @@
-# una variable de entorno en dockerfile
+# Definir variable de entorno para la versión de Node.js
 ARG NODE_VERSION=18-alpine
 
-# imagen base
+# Imagen base con Node.js
 FROM public.ecr.aws/docker/library/node:${NODE_VERSION} as base
-
-# carpeta de datos donde dejaré los recursos de la distribución de linux: usr
 WORKDIR /usr/src/app
 
-# las dependencias del proyecto: solo la de prod.
+# Fase de instalación de dependencias (solo producción)
 FROM base as deps
-# montajes: tipos: bind: copy
-# \: hace referencia que viene otra linea, copie solo el package json
-RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=yarn.lock,target=yarn.lock \
-    # mount: cache, quiero utilizar la cache de librerías para que la instalación sea más rápida
-    --mount=type=cache,target=/usr/local/share/.cache/yarn \
-    # Actualizamos Yarn a la última versión disponible
-    RUN npm install -g yarn@latest && \
-    # limpia la caché antes de la instalación
-    yarn cache clean || true && \
+COPY package.json yarn.lock ./
+RUN npm install -g yarn@latest && \
+    yarn cache clean && \
     yarn install --production --frozen-lockfile
 
-# transpilacion del codigo
+# Fase de construcción (para transpilación)
 FROM base as build
-RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=yarn.lock,target=yarn.lock \
-    --mount=type=cache,target=/usr/local/share/.cache/yarn \
-    # limpio la caché antes de la instalación
-    RUN yarn cache clean || true && \
+COPY package.json yarn.lock ./
+RUN yarn cache clean && \
     yarn install --frozen-lockfile
+
 COPY . .
 RUN yarn run build
 
-# imagen final
+# Imagen final para ejecución
 FROM base as final
-RUN apk add curl
-ENV NODE_ENV production
+RUN apk update && apk add curl
+ENV NODE_ENV=production
 USER node
-COPY package.json .
+
+# Copiar archivos necesarios
+COPY package.json ./
 COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/.env ./.env
 
-CMD yarn run start:prod
+# Comando de inicio
+CMD ["yarn", "run", "start:prod"]
+
 
 
 
