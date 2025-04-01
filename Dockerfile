@@ -2,7 +2,8 @@
 ARG NODE_VERSION=18-alpine 
 
 # Definimos nuestra imagen base
-FROM node:${NODE_VERSION} as base
+#FROM node:${NODE_VERSION} as base
+FROM public.ecr.aws/docker/library/node:${NODE_VERSION} as base
 
 # Utilizar la carpeta de datos para alojar archivos administrados propia de linux: usr
 WORKDIR /usr/src/app
