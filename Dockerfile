@@ -13,7 +13,7 @@ RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=bind,source=yarn.lock,target=yarn.lock \
     --mount=type=cache,target=/usr/local/share/.cache/yarn \
     # Limpiar la caché de Yarn para evitar problemas con versiones antiguas
-    RUN yarn cache clean \
+    yarn cache clean && \
     # Instalar solo las dependencias de producción
     yarn install --production
 
@@ -23,22 +23,23 @@ RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=bind,source=yarn.lock,target=yarn.lock \
     --mount=type=cache,target=/usr/local/share/.cache/yarn \
     # Limpiar la caché de Yarn
-    RUN yarn cache clean \
+    yarn cache clean && \
     # Asegurar que las dependencias se instalen con el archivo de bloqueo (yarn.lock)
     yarn install --frozen-lockfile
-COPY . .
+COPY . . 
 RUN yarn run build
 
 # Definición de la imagen final
 FROM base as final
-RUN apk add curl
+RUN apk add --no-cache curl
 ENV NODE_ENV production
 USER node
-COPY package.json .
+COPY package.json . 
 COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/.env ./.env
 CMD yarn run start:prod
+
 
 
 
