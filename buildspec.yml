@@ -19,7 +19,7 @@ phases:
       # Acá construimos nuestra imagen
       # -f: Permite tomar la definición de un docker-compose pero con otro nombre
       #- docker-compose -f compose-prd.yaml build
-      - docker-compose -f compose-prd.yaml build --no-cache
+      - docker-compose -f compose-prd.yaml build
   post_build:
     commands:
       # Acá publicamos la imagen generada

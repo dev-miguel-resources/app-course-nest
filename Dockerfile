@@ -1,44 +1,49 @@
-# Definir un argumento o parámetro dinámico
-ARG NODE_VERSION=18-alpine 
+# una variable de entorno en dockerfile
+ARG NODE_VERSION=18-alpine
 
-# Definimos nuestra imagen base
-FROM public.ecr.aws/docker/library/node:${NODE_VERSION} as base
+# imagen base
+FROM node:${NODE_VERSION} as base
 
-# Utilizar la carpeta de datos para alojar archivos administrados propia de linux: usr
+# carpeta de datos donde dejaré los recursos de la distribución de linux: usr
 WORKDIR /usr/src/app
 
-# Definir la gestión de las dependencias de cara a prod.
+# las dependencias del proyecto: solo la de prod.
 FROM base as deps
+# montajes: tipos: bind: copy
+# \: hace referencia que viene otra linea, copie solo el package json
 RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=yarn.lock,target=yarn.lock \
+    --mount=type=bind,source=package-lock.json,target=yarn.lock \
+    # mount: cache, quiero utilizar la cache de librerías para que la instalación sea más rápida
     --mount=type=cache,target=/usr/local/share/.cache/yarn \
-    # Limpiar la caché de Yarn para evitar problemas con versiones antiguas
-    yarn cache clean && \
-    # Instalar solo las dependencias de producción
-    yarn install --production
+    # Actualizamos Yarn a la última versión disponible
+    RUN npm install -g yarn@latest && \
+    # limpia la caché antes de la instalación
+    yarn cache clean || true && \
+    yarn install --production --frozen-lockfile
 
-# Generamos la transpilación del código
+# transpilacion del codigo
 FROM base as build
 RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=yarn.lock,target=yarn.lock \
+    --mount=type=bind,source=package-lock.json,target=yarn.lock \
     --mount=type=cache,target=/usr/local/share/.cache/yarn \
-    # Limpiar la caché de Yarn
-    yarn cache clean && \
-    # Asegurar que las dependencias se instalen con el archivo de bloqueo (yarn.lock)
+    # limpio la caché antes de la instalación
+    RUN yarn cache clean || true && \
     yarn install --frozen-lockfile
-COPY . . 
+COPY . .
 RUN yarn run build
 
-# Definición de la imagen final
+# imagen final
 FROM base as final
-RUN apk add --no-cache curl
+RUN apk add curl
 ENV NODE_ENV production
 USER node
-COPY package.json . 
+COPY package.json .
 COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/.env ./.env
+
 CMD yarn run start:prod
+
 
 
 
