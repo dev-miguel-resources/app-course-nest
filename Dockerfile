@@ -2,7 +2,7 @@
 ARG NODE_VERSION=18-alpine
 
 # imagen base
-FROM node:${NODE_VERSION} as base
+FROM public.ecr.aws/docker/library/node:${NODE_VERSION} as base
 
 # carpeta de datos donde dejaré los recursos de la distribución de linux: usr
 WORKDIR /usr/src/app
