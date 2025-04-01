@@ -12,7 +12,7 @@ FROM base as deps
 # montajes: tipos: bind: copy
 # \: hace referencia que viene otra linea, copie solo el package json
 RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=package-lock.json,target=yarn.lock \
+    --mount=type=bind,source=yarn.lock,target=yarn.lock \
     # mount: cache, quiero utilizar la cache de librerías para que la instalación sea más rápida
     --mount=type=cache,target=/usr/local/share/.cache/yarn \
     # Actualizamos Yarn a la última versión disponible
@@ -24,7 +24,7 @@ RUN --mount=type=bind,source=package.json,target=package.json \
 # transpilacion del codigo
 FROM base as build
 RUN --mount=type=bind,source=package.json,target=package.json \
-    --mount=type=bind,source=package-lock.json,target=yarn.lock \
+    --mount=type=bind,source=yarn.lock,target=yarn.lock \
     --mount=type=cache,target=/usr/local/share/.cache/yarn \
     # limpio la caché antes de la instalación
     RUN yarn cache clean || true && \
