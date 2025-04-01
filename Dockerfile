@@ -8,17 +8,19 @@ WORKDIR /usr/src/app
 # Fase de instalación de dependencias (solo producción)
 FROM base as deps
 COPY package.json yarn.lock ./
-RUN npm install -g yarn@latest && \
+
+# Verificar si Yarn ya está instalado antes de intentar instalarlo
+RUN if ! command -v yarn >/dev/null 2>&1; then npm install -g yarn@latest; fi && \
     yarn cache clean && \
     yarn install --production --frozen-lockfile
 
 # Fase de construcción (para transpilación)
 FROM base as build
 COPY package.json yarn.lock ./
-RUN yarn cache clean && \
-    yarn install --frozen-lockfile
 
-COPY . .
+RUN yarn cache clean && yarn install --frozen-lockfile
+
+COPY . .  
 RUN yarn run build
 
 # Imagen final para ejecución
@@ -35,6 +37,7 @@ COPY --from=build /usr/src/app/.env ./.env
 
 # Comando de inicio
 CMD ["yarn", "run", "start:prod"]
+
 
 
 
