@@ -1,43 +1,55 @@
-# Definir variable de entorno para la v. de Node.js
+# Definimos nuestra imagen base para la app
 ARG NODE_VERSION=18-alpine
 
-# Imagen base con Node.js y autenticación a docker hub
-FROM public.ecr.aws/docker/library/node:${NODE_VERSION} as base
+FROM node:${NODE_VERSION} as base
+
+# Utilizar la carpeta de datos para alojar archivos administrados propia de linux: usr
 WORKDIR /usr/src/app
 
-# Fase de instalación de dependencias (solo producción)
+# Definir la gestión de las dependencias de cara a prod.
+# Montajes: son para definir escenarios de pasos
+# Tipos: bind (copiar recursos) y cache (evitar redundancias de ejecución)
+# Si con yarn les sucede un problema con el directorio de cache vs lo del local ejecutar: yarn cache clean desde una terminal con permisos de admin
 FROM base as deps
-COPY package.json yarn.lock ./
+# \: hace referencia a un salto de linea y que viene una siguiente instrucción
+RUN --mount=type=bind,source=package.json,target=package.json \
+    # necesito que se genere en base a la deficiones del package.json
+    --mount=type=bind,source=yarn.lock,target=yarn.lock \
+    # mount: cache, quiero utilizar la cache de paquetes para que el procesamiento sea más rápido
+    # --mount=type=cache,target=/root/.npm \
+    --mount=type=cache,target=/usr/local/share/.cache/yarn \
+    # Omitir las dependencias de desarrollo y dejar solo las productivas de cara a la imagen final
+    # npm ci --omit=dev --force
+    yarn install --production
 
-# Verificar si Yarn ya está instalado antes de intentar instalarlo
-RUN if ! command -v yarn >/dev/null 2>&1; then npm install -g yarn@latest; fi && \
-    yarn cache clean && \
-    yarn install --production --frozen-lockfile
-
-# Fase de construcción (para transpilación)
+# Generamos la transpilación del código
 FROM base as build
-COPY package.json yarn.lock ./
-
-RUN yarn cache clean && yarn install --frozen-lockfile
-
-COPY . .  
+RUN --mount=type=bind,source=package.json,target=package.json \
+    --mount=type=bind,source=yarn.lock,target=yarn.lock \
+    --mount=type=cache,target=/usr/local/share/.cache/yarn \
+    yarn install --frozen-lockfile
+COPY . .
 RUN yarn run build
 
-# Imagen final para ejecución
+# Definición de la imagen final
+# Cuando se trabaja con multistage la que está definido al final es la imagen resultante
 FROM base as final
-RUN apk update && apk add curl
-ENV NODE_ENV=production
+# Instalar los permisos de llamada de la terminal del docker: instalar recursos externos o verificar estados del recurso
+RUN apk add curl
+# Podemos dejar descripciones a nivel de entorno para la imagen final: versiones, tags, entorno, etc...
+ENV NODE_ENV production
+# Definición para protección de los hackers: Cambiar el root admin. Por ej: cambias de root: /home/root a /home/node
 USER node
-
-# Copiar archivos necesarios
-COPY package.json ./
+# Debo traerme la referencia del archivo que ejecuta el script de levantamiento de la app
+COPY package.json .
+# Solicito el node_modules ya con solo el código de paquetes que ocupo para que la app funcione
 COPY --from=deps /usr/src/app/node_modules ./node_modules
+# Solicito el código fuente optimizado
 COPY --from=build /usr/src/app/dist ./dist
+# Solicito el traspaso de las variables de entorno
 COPY --from=build /usr/src/app/.env ./.env
-
-# Comando de inicio
-CMD ["yarn", "run", "start:prod"]
-
+# Ejecutar el arrancado de la app
+CMD yarn run start:prod
 
 
 
