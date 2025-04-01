@@ -20,6 +20,7 @@ RUN --mount=type=bind,source=package.json,target=package.json \
     --mount=type=cache,target=/usr/local/share/.cache/yarn \
     # Omitir las dependencias de desarrollo y dejar solo las productivas de cara a la imagen final
     # npm ci --omit=dev --force
+    # Si falla alguna referencia de yarn: pueden limpiar la cache local y luego propagar el cambio
     yarn install --production
 
 # Generamos la transpilación del código
