@@ -1,7 +1,7 @@
 # Definir variable de entorno para la versión de Node.js
 ARG NODE_VERSION=18-alpine
 
-# Imagen base con Node.js
+# Imagen base con Node.js y autenticación a docker hub
 FROM public.ecr.aws/docker/library/node:${NODE_VERSION} as base
 WORKDIR /usr/src/app
 
