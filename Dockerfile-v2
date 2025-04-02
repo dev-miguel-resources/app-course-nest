@@ -12,22 +12,23 @@ WORKDIR /usr/src/app
 # Si con yarn les sucede un problema con el directorio de cache vs lo del local ejecutar: yarn cache clean desde una terminal con permisos de admin
 FROM base as deps
 # \: hace referencia a un salto de linea y que viene una siguiente instrucción
-COPY package.json yarn.lock ./
-# Este es el truco para solucionar el problema de cache de yarn
-# command -v: verificar un recurso existente
-# !: denegación
-# >/dev/null: directorio que emite una salida en caso de encontrar el recurso
-# 2>&1: 2 (código de error que no lo encontró)
-# 1: es para no exponer el error y propagar ese error a la siguiente sentencia
-RUN if ! command -v yarn >/dev/null 2>&1; then npm install -g yarn@latest; fi && \
-    yarn cache clean && \
-    yarn install --production --frozen-lockfile
+RUN --mount=type=bind,source=package.json,target=package.json \
+    # necesito que se genere en base a la deficiones del package.json
+    --mount=type=bind,source=yarn.lock,target=yarn.lock \
+    # mount: cache, quiero utilizar la cache de paquetes para que el procesamiento sea más rápido
+    # --mount=type=cache,target=/root/.npm \
+    --mount=type=cache,target=/usr/local/share/.cache/yarn \
+    # Omitir las dependencias de desarrollo y dejar solo las productivas de cara a la imagen final
+    # npm ci --omit=dev --force
+    # Si falla alguna referencia de yarn: pueden limpiar la cache local y luego propagar el cambio
+    yarn install --production
 
 # Generamos la transpilación del código
 FROM base as build
-COPY package.json yarn.lock ./
-RUN yarn cache clean && yarn install --frozen-lockfile
-
+RUN --mount=type=bind,source=package.json,target=package.json \
+    --mount=type=bind,source=yarn.lock,target=yarn.lock \
+    --mount=type=cache,target=/usr/local/share/.cache/yarn \
+    yarn install --frozen-lockfile
 COPY . .
 RUN yarn run build
 
@@ -35,7 +36,7 @@ RUN yarn run build
 # Cuando se trabaja con multistage la que está definido al final es la imagen resultante
 FROM base as final
 # Instalar los permisos de llamada de la terminal del docker: instalar recursos externos o verificar estados del recurso
-RUN apk update && add curl
+RUN apk add curl
 # Podemos dejar descripciones a nivel de entorno para la imagen final: versiones, tags, entorno, etc...
 ENV NODE_ENV production
 # Definición para protección de los hackers: Cambiar el root admin. Por ej: cambias de root: /home/root a /home/node
@@ -50,4 +51,55 @@ COPY --from=build /usr/src/app/dist ./dist
 COPY --from=build /usr/src/app/.env ./.env
 # Ejecutar el arrancado de la app
 CMD yarn run start:prod
-#CMD ["yarn", "run", "start:prod"]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
