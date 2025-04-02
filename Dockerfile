@@ -35,7 +35,7 @@ RUN yarn run build
 # Cuando se trabaja con multistage la que está definido al final es la imagen resultante
 FROM base as final
 # Instalar los permisos de llamada de la terminal del docker: instalar recursos externos o verificar estados del recurso
-RUN apk update && add curl
+RUN apk update && apk add curl
 # Podemos dejar descripciones a nivel de entorno para la imagen final: versiones, tags, entorno, etc...
 ENV NODE_ENV production
 # Definición para protección de los hackers: Cambiar el root admin. Por ej: cambias de root: /home/root a /home/node
