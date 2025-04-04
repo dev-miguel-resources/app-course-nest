@@ -7,5 +7,6 @@ services:
     image: 748968218843.dkr.ecr.us-east-1.amazonaws.com/arq-hex-node
     container_name: app-nest
     restart: unless-stopped
+    # adecuación puerto
     ports:
       - 80:80
