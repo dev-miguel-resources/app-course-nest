@@ -7,7 +7,7 @@ services:
     container_name: app-nest
     restart: unless-stopped
     ports:
-      - 80:80 # Exponemos el puerto 80 dentro del contenedor (puerto de la aplicación backend)
+      - 3000:3000 # Exponemos el puerto 80 dentro del contenedor (puerto de la aplicación backend)
 
   # Servicio de Nginx (proxy inverso)
   nginx:
