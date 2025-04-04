@@ -24,7 +24,7 @@ export const databaseProviders = [
       return dataSource.initialize();
     },
   },
-  {
+  /*{
     provide: 'DATA_SOURCE_MONGO',
     useFactory: async () => {
       const dataSource = new DataSource({
@@ -45,5 +45,5 @@ export const databaseProviders = [
 
       return dataSource.initialize(); // devuelve la instancia del mongo server
     },
-  },
+  },*/
 ];
