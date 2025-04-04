@@ -1,21 +1,11 @@
 version: '3.8'
-
 services:
-  # Servicio de la aplicación (Node.js)
   arq-hex-app:
-    image: 748968218843.dkr.ecr.us-east-1.amazonaws.com/arq-hex-node # Usa la imagen de ECR
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: 748968218843.dkr.ecr.us-east-1.amazonaws.com/arq-hex-node
     container_name: app-nest
     restart: unless-stopped
     ports:
-      - 3000:3000 # Exponemos el puerto 80 dentro del contenedor (puerto de la aplicación backend)
-
-  # Servicio de Nginx (proxy inverso)
-  nginx:
-    image: nginx
-    container_name: nginx
-    restart: unless-stopped
-    ports:
-      - 80:80 # Exponemos el puerto 80 de Nginx hacia el exterior
-    volumes:
-      - ./nginx.conf:/etc/nginx/nginx.conf # Montamos el archivo de configuración de Nginx
-
+      - 3000:3000
