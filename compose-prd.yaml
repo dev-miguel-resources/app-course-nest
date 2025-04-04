@@ -18,11 +18,4 @@ services:
       - 80:80 # Exponemos el puerto 80 de Nginx hacia el exterior
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf # Montamos el archivo de configuración de Nginx
-    depends_on:
-      - arq-hex-app # Nginx depende del servicio de la aplicación para iniciar
-    networks:
-      - app-network # Definimos una red para que ambos servicios puedan comunicarse
 
-networks:
-  app-network:
-    driver: bridge
