@@ -1,8 +1,7 @@
 {
   "AWSEBDockerrunVersion": "1",
   "Image": {
-    "Name": "748968218843.dkr.ecr.us-east-1.amazonaws.com/arq-hex-node:latest",
-    "Update": "true"
+    "Name": "748968218843.dkr.ecr.us-east-1.amazonaws.com/arq-hex-node"
   },
   "Ports": [
     {
