@@ -48,6 +48,9 @@ COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/dist ./dist
 # Solicito el traspaso de las variables de entorno
 COPY --from=build /usr/src/app/.env ./.env
+
+EXPOSE 80
+
 # Ejecutar el arrancado de la app
 CMD yarn run start:prod
 #CMD ["yarn", "run", "start:prod"]
