@@ -8,4 +8,4 @@ services:
     container_name: app-nest
     restart: unless-stopped
     ports:
-      - 3000:3000
+      - 80:80
