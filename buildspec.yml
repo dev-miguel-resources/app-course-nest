@@ -1,5 +1,5 @@
 # Defines tu flujo de CI/CD para el code-pipeline
-# Paso 1: Debes versionar el flujo de CI/CD
+# Paso 1: Debes versionar el flujo de CI/CD deploy.
 version: 0.2
 # Definimos las etapas del flujo de CI/CD
 # en otras herramientas se llaman stages
