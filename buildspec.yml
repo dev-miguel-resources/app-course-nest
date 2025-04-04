@@ -12,7 +12,7 @@ phases:
     commands:
       - echo Logging into AWS ECR
       # Ocupar el cli de aws para autenticarme con la nube y así poder utilizar el servicio de ecr que es donde quiero publicar la imagen de mi app
-      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 101814004029.dkr.ecr.us-east-1.amazonaws.com/arq-hex-node
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 748968218843.dkr.ecr.us-east-1.amazonaws.com/arq-hex-node
   build:
     commands:
       - echo Building image Docker
