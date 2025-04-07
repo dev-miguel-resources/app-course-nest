@@ -34,9 +34,9 @@ COPY . .
 RUN yarn run build
 
 # ---------- TEST ----------
-#FROM build as test
-#RUN yarn test:e2e
-#RUN yarn test
+FROM build as test
+RUN yarn test:e2e
+RUN yarn test
 
 # Definición de la imagen final
 # Cuando se trabaja con multistage la que está definido al final es la imagen resultante
