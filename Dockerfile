@@ -34,9 +34,9 @@ COPY . .
 RUN yarn run build
 
 # ---------- TEST ----------
-FROM build as test
-RUN yarn test:e2e
-RUN yarn test
+#FROM build as test
+#RUN yarn test:e2e
+#RUN yarn test
 
 # Definición de la imagen final
 # Cuando se trabaja con multistage la que está definido al final es la imagen resultante
@@ -51,8 +51,10 @@ USER node
 COPY package.json .
 # Solicito el node_modules ya con solo el código de paquetes que ocupo para que la app funcione
 COPY --from=deps /usr/src/app/node_modules ./node_modules
+
 # Solicito el código fuente optimizado
 COPY --from=build /usr/src/app/dist ./dist
+
 # Solicito el traspaso de las variables de entorno
 COPY --from=build /usr/src/app/.env ./.env
 

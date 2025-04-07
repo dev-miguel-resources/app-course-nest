@@ -23,6 +23,11 @@ phases:
       # Acá construimos nuestra imagen
       # -f: Permite tomar la definición de un docker-compose pero con otro nombre
       #- docker-compose -f compose-prd.yaml build
+      - echo "🧪 Ejecutando tests con docker-compose..."
+      - docker-compose -f compose-prd.yaml run --rm app yarn test:e2e
+      - docker-compose -f compose-prd.yaml run --rm app yarn test
+
+      - echo "🐳 Construyendo imagen con docker-compose..."
       - docker-compose -f compose-prd.yaml build
   post_build:
     commands:
