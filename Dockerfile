@@ -33,7 +33,7 @@ RUN yarn cache clean && yarn install --frozen-lockfile
 COPY . .
 RUN yarn run build
 
-# ---------- TEST ----------
+# ---------- TESTS ----------
 FROM build as test
 RUN yarn test:e2e
 RUN yarn test
