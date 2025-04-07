@@ -2,6 +2,6 @@
 dist
 node_modules
 requests
-test
-tests
+#test
+#tests
 coverage

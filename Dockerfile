@@ -1,4 +1,5 @@
 # Definimos nuestra imagen base para la app
+# ---------- BASE ----------
 ARG NODE_VERSION=18-alpine
 
 FROM public.ecr.aws/docker/library/node:${NODE_VERSION} as base
@@ -10,6 +11,7 @@ WORKDIR /usr/src/app
 # Montajes: son para definir escenarios de pasos
 # Tipos: bind (copiar recursos) y cache (evitar redundancias de ejecución)
 # Si con yarn les sucede un problema con el directorio de cache vs lo del local ejecutar: yarn cache clean desde una terminal con permisos de admin
+# ---------- DEPENDENCIAS PARA PRODUCCIÓN ----------
 FROM base as deps
 # \: hace referencia a un salto de linea y que viene una siguiente instrucción
 COPY package.json yarn.lock ./
@@ -23,13 +25,18 @@ RUN if ! command -v yarn >/dev/null 2>&1; then npm install -g yarn@latest; fi &&
     yarn cache clean && \
     yarn install --production --frozen-lockfile
 
-# Generamos la transpilación del código
+# ---------- BUILD: COMPILACIÓN DE TS ----------
 FROM base as build
 COPY package.json yarn.lock ./
 RUN yarn cache clean && yarn install --frozen-lockfile
 
 COPY . .
 RUN yarn run build
+
+# ---------- TEST ----------
+FROM build as test
+RUN yarn test:e2e
+RUN yarn test
 
 # Definición de la imagen final
 # Cuando se trabaja con multistage la que está definido al final es la imagen resultante
