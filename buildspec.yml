@@ -17,8 +17,8 @@ phases:
   build:
     commands:
       - echo Copying config files
-      - aws s3 cp s3://myawsbucketenviroment/prd/.env .env
-      - aws s3 cp s3://myawsbucketenviroment/prd/Dockerrun.aws.json Dockerrun.aws.json
+      - aws s3 cp s3://myawsbucketenviroments3/prd/.env .env
+      - aws s3 cp s3://myawsbucketenviroments3/prd/Dockerrun.aws.json Dockerrun.aws.json
       - echo Building image Docker
       # Acá construimos nuestra imagen
       # -f: Permite tomar la definición de un docker-compose pero con otro nombre
